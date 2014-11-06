@@ -66,8 +66,8 @@ since they do not need to run each time the project is built.
 ## Testing
 
 Front end unit testing is already stubbed out and running with
-(Karma)[http://karma-runner.github.io/0.12/index.html], and end-to-end testing is
-implemented through (Protractor)[http://angular.github.io/protractor/].
+[Karma](http://karma-runner.github.io/0.12/index.html), and end-to-end testing is
+implemented through [Protractor](http://angular.github.io/protractor/).
 
 The unit testing runs each time the project is built as part of the standard Grunt
 build. The e2e tests have to be run manually, and requires the installation of some
