@@ -1,0 +1,23 @@
+{
+  "name": "ng-springPlate",
+  "version": "0.0.1",
+  "description": "Boilerplate project for a Spring MVC backed AngularJS application.",
+  "authors": [
+    "Brad Proctor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.2",
+    "foundation": "~5.3",
+    "less": "1.7.5",
+    "angular-foundation": "~0.3"
+  }
+}

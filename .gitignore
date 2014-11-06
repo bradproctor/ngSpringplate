@@ -1,0 +1,12 @@
+# -- Build files --
+web/src/main/webapp/build
+web/src/main/webapp/app/styles/app.css
+web/target
+services/target
+
+# -- Libraries --
+web/src/main/webapp/app/vendor
+web/src/main/webapp/node_modules
+
+# -- Logs --
+*.log

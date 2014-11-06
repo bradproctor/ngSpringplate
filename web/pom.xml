@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ng-springplate</artifactId>
+        <groupId>net.bradproctor</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
+    <artifactId>web</artifactId>
+
+    <properties>
+        <gruntDir>${project.basedir}/src/main/webapp/</gruntDir>
+        <gruntPath>grunt</gruntPath>
+        <gruntBuild>build</gruntBuild>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.9</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <webappDirectory>
+                        ${project.build.directory}/${project.artifactId}.${project.packaging}
+                    </webappDirectory>
+                    <warSourceExcludes>
+                        node_modules/**,
+                        test/**
+                    </warSourceExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>grunt-build</id>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <target name="grunt build">
+                                <exec executable="cmd" dir="${gruntDir}"
+                                      osfamily="windows" resultproperty="cmdresult">
+                                    <arg line="/c ${gruntPath} ${gruntBuild}"/>
+                                </exec>
+                                <exec executable="bash" dir="${gruntDir}"
+                                      osfamily="unix" resultproperty="cmdresult">
+                                    <arg value="-c" />
+                                    <arg line='"${gruntPath} ${gruntBuild}"'/>
+                                </exec>
+                                <condition property="cmdsuccess">
+                                    <equals arg1="${cmdresult}" arg2="0"/>
+                                </condition>
+                                <fail unless="cmdsuccess"/>
+                                <echo>Grunt build completed successfully!</echo>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

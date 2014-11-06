@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+    	http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    	http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop.xsd
+	    http://www.springframework.org/schema/cache  http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <aop:aspectj-autoproxy />
+
+    <context:component-scan  base-package="net.bradproctor.ngspringplate"/>
+
+    <!-- Import the data source configuration -->
+    <import resource="classpath:spring/datasource-config.xml"/>
+
+    <!-- Hibernate Spring JPA Configuration -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="packagesToScan" value="net.bradproctor.ngspringplate.domain"></property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernateDialect}</prop>
+                <prop key="hibernate.show_sql">${showHibernateSQL}</prop>
+                <prop key="hibernate.format_sql">${formatHibernateSQL}</prop>
+                <prop key="hibernate.cache.use_query_cache">${useHibernateQueryCache}</prop>
+                <prop key="hibernate.jdbc.batch_size">${hibernateBatchSize}</prop>
+                <prop key="hibernate.connection.isolation">1</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <!-- This fixes a JBoss Classloader issue where JBoss was attempting to load its version of Hibernate rather than ours. -->
+                <prop key="hibernate.validator.apply_to_ddl">false</prop>
+                <prop key="hibernate.validator.autoregister_listeners">false</prop>
+            </props>
+        </property>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- the transactional semantics... -->
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="find*" read-only="true" />
+            <tx:method name="search*" read-only="true" />
+            <tx:method name="lookup*" read-only="true" />
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*" rollback-for="Throwable"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="anlServiceOperation"
+            expression="execution(* net.bradproctor.ngspringplate.services.*.save*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.export*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.remove*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.update*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.add*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.get*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.find*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.delete*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.search*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.lookup*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.load*(..))
+			|| execution(* net.bradproctor.ngspringplate.services.*.performAction*(..))" />
+
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="anlServiceOperation" />
+    </aop:config>
+</beans>
