@@ -1,4 +1,4 @@
-angular.module("app", ['ngRoute', 'app.home'])
+angular.module("app", ['ngRoute', 'app.home', 'app.shared'])
 
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider
