@@ -12,7 +12,6 @@ module.exports = function(grunt) {
                     'styles/*.css',
                     'styles/*.less',
                     'scripts/**/*.html',
-                    'messages/*-messages.json',
                     'images/**'
                 ],
                 dest: 'build',
