@@ -4,7 +4,6 @@ angular.module('app.shared')
         var localize = {
             language:$window.navigator.userLanguage || $window.navigator.language,
             dictionary: [],
-            resourceFileLoaded: false,
             supportedLangs: [
                 'en-US'
             ],
